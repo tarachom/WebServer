@@ -10,21 +10,12 @@ namespace DumpHttpRequests
     {
         private static void Main(string[] args)
         {
-            if (!HttpListener.IsSupported)
-            {
-                Console.WriteLine("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
-                return;
-            }
-            // URI prefixes are required,
-            var prefixes = new List<string>() { "http://*:8888/" };
 
             // Create a listener.
             HttpListener listener = new HttpListener();
-            // Add the prefixes.
-            foreach (string s in prefixes)
-            {
-                listener.Prefixes.Add(s);
-            }
+
+            listener.Prefixes.Add("http://localhost:8888/");
+
             listener.Start();
             Console.WriteLine("Listening...");
             while (true)
@@ -48,7 +39,11 @@ namespace DumpHttpRequests
                 // Obtain a response object.
                 HttpListenerResponse response = context.Response;
                 // Construct a response.
-                string responseString = "<HTML><BODY> Hello world!</BODY></HTML>";
+                string responseString =
+                    "<HTML><BODY>" + "" +
+                    "<form method=\"post\">First name: <input type=\"text\" name=\"firstname\" /><br />Last name: <input type=\"text\" name=\"lastname\" /><input type=\"submit\" value=\"Submit\" /></form>" +
+                    "<form method =\"post\" enctype=\"multipart/form-data\"><input id=\"fileUp\" name=\"fileUpload\" type=\"file\" /><input type=\"submit\" /></form>" +
+                    "</BODY></HTML>";
                 byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
                 // Get a response stream and write the response to it.
                 response.ContentLength64 = buffer.Length;
